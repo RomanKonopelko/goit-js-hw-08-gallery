@@ -24,32 +24,14 @@ galleryRef.addEventListener('click', event => {
     addOpenTag(picLink, picAlt, picIndex)
    
     window.addEventListener('keydown', event => {
-        let index = +modalPicRef.dataset.index
-        let followPic = galleryRef.childNodes[index].childNodes[0].firstChild
         if (event.key === 'Escape') {
             removeOpenTag()
         }
-        if (index === 8) { 
-    index -= 9
-        }
-        if (event.key === 'ArrowRight') {
-            // console.log(index);
-            index += 1
-            // console.log(index);
-            modalPicRef.dataset.index = index
-            followPic = galleryRef.childNodes[index].childNodes[0].firstChild
-            // console.log(followPic);
-            // console.log(modalPicRef.dataset.index);
-            modalPicRef.src = followPic.dataset.source
-        }
-        
-        if (event.key === 'ArrowLeft') { 
-            index -= 1
-            followPic = galleryRef.childNodes[index].childNodes[0].firstChild
-            modalPicRef.dataset.index = index
-            modalPicRef.src = followPic.dataset.source
-        }
     })
+
+    window.addEventListener('keydown', rigthPicture)
+   
+    window.addEventListener('keydown', leftPicture)
     
     overlayRef.addEventListener('click', event => { 
         if (event.target === event.currentTarget) { 
@@ -103,4 +85,29 @@ function removeEventListener() {
     window.removeEventListener('keydown')
     overlayRef.removeEventListener('click')
     modalCloseBtn.removeEventListener('click')
+}
+
+function nextPicture(index, step) { 
+    let currentIndex = index + step
+    if (currentIndex <= 0) {
+        currentIndex = galleryRef.childNodes.length - 1
+    } else if (currentIndex === galleryRef.childNodes.length) { 
+        currentIndex = 0
+    }
+    let currentPicture = galleryRef.childNodes[currentIndex].childNodes[0].firstChild
+    modalPicRef.src = currentPicture.dataset.source
+    modalPicRef.alt = currentPicture.alt
+    modalPicRef.dataset.index = currentIndex
+}
+
+function rigthPicture(event) {
+    if (event.key === 'ArrowRight') { 
+        nextPicture(+modalPicRef.dataset.index, +1)
+    }
+}
+ 
+function leftPicture(event) { 
+    if (event.key === 'ArrowLeft') { 
+        nextPicture(+modalPicRef.dataset.index, -1)
+    }
 }
