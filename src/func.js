@@ -89,7 +89,7 @@ function removeEventListener() {
 
 function nextPicture(index, step) { 
     let currentIndex = index + step
-    if (currentIndex <= 0) {
+    if (currentIndex < 0) {
         currentIndex = galleryRef.childNodes.length - 1
     } else if (currentIndex === galleryRef.childNodes.length) { 
         currentIndex = 0
