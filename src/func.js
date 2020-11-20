@@ -20,46 +20,50 @@ galleryRef.addEventListener('click', event => {
     if (event.target.nodeName === 'UL') { 
         return
     }
-    addOpenTag(picLink, picAlt, picIndex)
-})
-
-overlayRef.addEventListener('click', event => { 
-    if (event.target === event.currentTarget) { 
-        removeOpenTag()
-    }
-})
-
-modalCloseBtn.addEventListener('click', () => {
-    removeOpenTag()
-})
-
-window.addEventListener('keydown', event => {
-    let index = +modalPicRef.dataset.index
-    let followPic = galleryRef.childNodes[index].childNodes[0].firstChild
-    if (event.key === 'Escape') {
-        removeOpenTag()
-    }
-    if (index === 8) { 
-index -= 9
-    }
-    if (event.key === 'ArrowRight') {
-        // console.log(index);
-        index += 1
-        // console.log(index);
-        modalPicRef.dataset.index = index
-        followPic = galleryRef.childNodes[index].childNodes[0].firstChild
-        // console.log(followPic);
-        // console.log(modalPicRef.dataset.index);
-        modalPicRef.src = followPic.dataset.source
-    }
     
-    if (event.key === 'ArrowLeft') { 
-        index -= 1
-        followPic = galleryRef.childNodes[index].childNodes[0].firstChild
-        modalPicRef.dataset.index = index
-        modalPicRef.src = followPic.dataset.source
-    }
+    addOpenTag(picLink, picAlt, picIndex)
+   
+    window.addEventListener('keydown', event => {
+        let index = +modalPicRef.dataset.index
+        let followPic = galleryRef.childNodes[index].childNodes[0].firstChild
+        if (event.key === 'Escape') {
+            removeOpenTag()
+        }
+        if (index === 8) { 
+    index -= 9
+        }
+        if (event.key === 'ArrowRight') {
+            // console.log(index);
+            index += 1
+            // console.log(index);
+            modalPicRef.dataset.index = index
+            followPic = galleryRef.childNodes[index].childNodes[0].firstChild
+            // console.log(followPic);
+            // console.log(modalPicRef.dataset.index);
+            modalPicRef.src = followPic.dataset.source
+        }
+        
+        if (event.key === 'ArrowLeft') { 
+            index -= 1
+            followPic = galleryRef.childNodes[index].childNodes[0].firstChild
+            modalPicRef.dataset.index = index
+            modalPicRef.src = followPic.dataset.source
+        }
+    })
+    
+    overlayRef.addEventListener('click', event => { 
+        if (event.target === event.currentTarget) { 
+            removeOpenTag()
+        }
+    })
+   
+    modalCloseBtn.addEventListener('click', () => {
+        removeOpenTag()
+        removeEventListener()
+    })
 })
+
+
 
 
 function removeOpenTag() { 
@@ -95,3 +99,8 @@ const galleryArr = pics.map(pic => {
 return ul.append(...galleryArr)
 }
 
+function removeEventListener() { 
+    window.removeEventListener('keydown')
+    overlayRef.removeEventListener('click')
+    modalCloseBtn.removeEventListener('click')
+}
