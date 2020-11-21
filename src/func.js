@@ -15,7 +15,6 @@ galleryRef.addEventListener('click', event => {
     const picLink = event.target.dataset.source
     const picAlt = event.target.alt
     const picIndex = +event.target.dataset.index
-    console.log(picIndex);
     
     if (event.target.nodeName === 'UL') { 
         return
@@ -23,26 +22,13 @@ galleryRef.addEventListener('click', event => {
     
     addOpenTag(picLink, picAlt, picIndex)
    
-    window.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
-            removeOpenTag()
-        }
-    })
+    window.addEventListener('keydown', escapePress)
 
-    window.addEventListener('keydown', rigthPicture)
-   
-    window.addEventListener('keydown', leftPicture)
+    window.addEventListener('keydown', leftRigthPicture)
     
-    overlayRef.addEventListener('click', event => { 
-        if (event.target === event.currentTarget) { 
-            removeOpenTag()
-        }
-    })
+    overlayRef.addEventListener('click', overlayPress)
    
-    modalCloseBtn.addEventListener('click', () => {
-        removeOpenTag()
-        removeEventListener()
-    })
+    modalCloseBtn.addEventListener('click', removeListenerTags)
 })
 
 
@@ -62,12 +48,12 @@ function addOpenTag(picLink, picAlt, picIndex) {
 }
 
 function setPictures(ul, pics) { 
-const galleryArr = pics.map(pic => { 
+const galleryArr = pics.map((pic,index) => { 
     const li = document.createElement('li')
         const a = document.createElement('a')
         const img = document.createElement('img')
         img.classList.add('gallery__image')
-        img.setAttribute('data-index', pics.indexOf(pic))
+        img.setAttribute('data-index', index)
         img.setAttribute('data-source', pic.original)
         img.src = pic.preview
         img.alt = pic.description
@@ -82,9 +68,10 @@ return ul.append(...galleryArr)
 }
 
 function removeEventListener() { 
-    window.removeEventListener('keydown')
-    overlayRef.removeEventListener('click')
-    modalCloseBtn.removeEventListener('click')
+    window.removeEventListener('keydown', leftRigthPicture)
+    window.removeEventListener('keydown', escapePress)
+    overlayRef.removeEventListener('click', overlayPress)
+    modalCloseBtn.removeEventListener('click',removeListenerTags)
 }
 
 function nextPicture(index, step) { 
@@ -100,14 +87,27 @@ function nextPicture(index, step) {
     modalPicRef.dataset.index = currentIndex
 }
 
-function rigthPicture(event) {
-    if (event.key === 'ArrowRight') { 
-        nextPicture(+modalPicRef.dataset.index, +1)
-    }
+function escapePress(event) { 
+      if (event.key === 'Escape') {
+            removeOpenTag()
+        }
 }
- 
-function leftPicture(event) { 
-    if (event.key === 'ArrowLeft') { 
+
+function overlayPress(event) { 
+    if (event.target === event.currentTarget) { 
+            removeOpenTag()
+        }
+}
+
+function removeListenerTags() { 
+    removeOpenTag()
+        removeEventListener()
+}
+
+function leftRigthPicture(event) { 
+ if (event.key === 'ArrowRight') { 
+        nextPicture(+modalPicRef.dataset.index, +1)
+    }else if(event.key === 'ArrowLeft') { 
         nextPicture(+modalPicRef.dataset.index, -1)
     }
 }
