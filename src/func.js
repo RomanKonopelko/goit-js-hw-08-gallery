@@ -2,9 +2,12 @@ import pictures from "./gallery-items.js";
 
 const galleryRef = document.querySelector(".js-gallery");
 const modalRef = document.querySelector(".lightbox");
+const modalContent = document.querySelector(".lightbox__content");
 const modalPicRef = document.querySelector(".lightbox__image");
 const modalCloseBtn = document.querySelector('[data-action="close-lightbox"]');
 const overlayRef = document.querySelector(".lightbox__overlay");
+const btnLeft = document.createElement("button");
+const btnRigth = document.createElement("button");
 
 setPictures(galleryRef, pictures);
 
@@ -13,13 +16,17 @@ galleryRef.addEventListener("click", (event) => {
   const picLink = event.target.dataset.source;
   const picAlt = event.target.alt;
   const picIndex = +event.target.dataset.index;
+  modalContent.append(btnLeft, btnRigth);
+  btnRigth.classList.add("slider_rigth");
+  btnLeft.classList.add("slider_left");
 
   if (event.target.nodeName === "UL") {
     return;
   }
 
   addOpenTag(picLink, picAlt, picIndex);
-
+  btnRigth.addEventListener("click", clickLeftRigthPicture);
+  btnLeft.addEventListener("click", clickLeftRigthPicture);
   window.addEventListener("keydown", escapePress);
 
   window.addEventListener("keydown", leftRigthPicture);
@@ -31,6 +38,8 @@ galleryRef.addEventListener("click", (event) => {
 
 function removeOpenTag() {
   modalRef.classList.remove("is-open");
+  btnRigth.classList.remove("slider_rigth");
+  btnLeft.classList.remove("slider_left");
   modalPicRef.src = "";
   modalPicRef.alt = "";
 }
@@ -59,6 +68,7 @@ function setPictures(ul, pics) {
     li.append(a);
     return li;
   });
+
   return ul.append(...galleryArr);
 }
 
@@ -98,7 +108,13 @@ function removeListenerTags() {
   removeOpenTag();
   removeEventListener();
 }
-
+function clickLeftRigthPicture(event) {
+  if (event.target === btnRigth) {
+    nextPicture(+modalPicRef.dataset.index, +1);
+  } else if (event.target === btnLeft) {
+    nextPicture(+modalPicRef.dataset.index, -1);
+  }
+}
 function leftRigthPicture(event) {
   if (event.key === "ArrowRight") {
     nextPicture(+modalPicRef.dataset.index, +1);
